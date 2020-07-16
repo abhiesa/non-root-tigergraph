@@ -1,0 +1,19 @@
+sudo: required #is required to use docker service in travis
+
+language: php #can be any language, just php for example
+
+services:
+  - docker # required, but travis uses older version of docker :(
+
+install:
+  - echo "install nothing!" # put your normal pre-testing installs here
+
+script:
+  - echo "no tests!" # put your normal testing scripts here
+
+after_success:
+  - docker --version  # document the version travis is using
+  - docker build -t abhiesa/nonroot-tigergraph .
+  - docker tag -t abhiesa/nonroot-tigergraph abhiesa/nonroot-tigergraph:latest
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker push abhiesa/nonroot-tigergraph:latest
